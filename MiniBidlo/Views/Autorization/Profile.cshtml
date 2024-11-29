@@ -1,0 +1,27 @@
+﻿@model MiniBidlo.Models.User
+
+@{
+    ViewData["Title"] = "Профиль пользователя";
+}
+
+<head>
+    <title>@ViewData["Title"]</title>
+    <link href="~/css/autorization.css" rel="stylesheet" />
+    <link href="~/css/autorization22.css" rel="stylesheet" />
+</head>
+<body>
+
+    <div class="profile-form">
+        
+        <h2>Профиль пользователя</h2>
+
+        <p><strong>Логин:</strong> @Model.Login</p>
+        <p><strong>Имя:</strong> @Model.Name</p>
+        <p><strong>Email:</strong> @Model.Email</p>
+        <p><strong>Телефон:</strong> @Model.Phone</p>
+        <p><strong>Роль:</strong> @Model.Role</p>
+
+        <a href="@Url.Action("Index", "Autorization")">Выйти</a>
+    </div>
+
+</body>

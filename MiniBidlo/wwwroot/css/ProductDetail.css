@@ -1,0 +1,112 @@
+﻿body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    background-color: white;
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+}
+
+    .header .logo {
+        font-size: 24px;
+        font-weight: bold;
+        color: #4CAF50;
+        margin-right: auto;
+    }
+
+    .header .nav {
+        display: flex;
+        gap: 20px;
+    }
+
+        .header .nav a {
+            text-decoration: none;
+            color: black;
+            font-size: 16px;
+        }
+
+.container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 800px;
+    padding: 20px;
+    display: flex;
+    flex-direction: row;
+}
+
+    .card img {
+        width: 400px;
+        border-radius: 10px;
+        margin-right: 20px;
+        margin-top: 80px;
+    }
+
+.card-content {
+    flex: 1;
+    flex-direction: column; 
+}
+
+    .card-content h2 {
+        color: #e53935;
+        font-size: 24px;
+        margin: 10px 0;
+    }
+
+    .card-content .price {
+        font-size: 20px;
+        color: #757575;
+        margin: 10px 0;
+    }
+
+    .card-content .description, .card-content .features, .card-content .specifications {
+        margin: 20px 0;
+    }
+
+        .card-content .description h3, .card-content .features h3, .card-content .specifications h3 {
+            color: #e53935;
+            font-size: 18px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e53935;
+            padding-bottom: 5px;
+        }
+
+        .card-content .description p, .card-content .features ul, .card-content .specifications ul {
+            font-size: 16px;
+            color: #757575;
+        }
+
+        .card-content .features ul, .card-content .specifications ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+            .card-content .features ul li, .card-content .specifications ul li {
+                margin: 5px 0;
+            }
+
+    .card-content .buy-button {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        text-decoration: none;
+    }

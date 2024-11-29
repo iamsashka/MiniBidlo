@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Авторизация";
+}
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Message"]
+    </div>
+}
+
+<head>
+    <title>Авторизация</title>
+    <link href="~/css/autorization.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="signup-form">
+        <h2>Авторизация</h2>
+        <p>Войдите в свою учетную запись</p>
+
+        <form method="post">
+            <label for="login">Логин</label>
+            <input type="text" class="form-control" id="login" name="login" required placeholder="Введите логин" />
+
+            <label for="password">Пароль</label>
+            <input type="password" class="form-control" id="password" name="password" required placeholder="Введите пароль" />
+
+            <button type="submit" class="signup-btn">Войти</button>
+        </form>
+
+        <p class="signin-link">Еще нет аккаунта? <a href="@Url.Action("Registry", "Autorization")">Зарегистрироваться</a></p>
+    </div>
+
+    @if (ViewData["Error"] != null)
+    {
+        <div class="alert alert-danger mt-3">
+            @ViewData["Error"]
+        </div>
+    }
+</body>

@@ -1,0 +1,57 @@
+﻿@model MiniBidlo.Models.Product
+<link href="~/css/productdetail.css" rel="stylesheet" />
+<body>
+    <div class="container">
+        <div class="card">
+            
+      
+            <img alt="Букет Роз" src="~/image/@Model.ImageUrl" />
+            <div class="card-content">
+                <h2>@Model.Name</h2>
+                <div class="price">@Model.Price</div>
+                <div class="description">@Model.Description</div>
+                <div class="features">
+                    <h3>
+                        Описание товара
+                    </h3>
+                    <p>
+                        Букет Роз - это идеальный подарок для любого торжества. Он состоит из свежих роз, которые будут радовать глаз и душу. Букет идеально подойдет для дня рождения, годовщины или любого другого праздника.
+                    </p>
+                    <ul>
+                        <li>
+                            Свежие розы
+                        </li>   
+                        <li>
+                            Идеально для любого торжества
+                        </li>
+                        <li>
+                            Красивый и элегантный дизайн
+                        </li>
+                    </ul>
+                </div>
+                <div class="specifications">
+                    <h3>
+                        Характеристики
+                    </h3>
+                    <ul>
+                        <li>
+                            Количество: @Model.StockQuantity
+                        </li>
+                        <li>
+                            Цвет: красный
+                        </li>
+                        <li>
+                            Материал: свежие цветы
+                        </li>
+                    </ul>
+                </div>
+                <a class="buy-button" href="#">
+                    Купить
+                </a>
+                
+            </div>    
+            
+
+        </div>
+    </div>
+</body>
