@@ -1,29 +1,26 @@
-﻿function addToCart(productId, productName, productPrice) {
-    // Создание данных для запроса
-    const data = {
-        productId: productId,
-        quantity: 1 // или получаем количество с интерфейса, если требуется
-    };
+﻿// addcart.js
 
-    // Отправка AJAX-запроса на сервер
+function addToCart(productId, quantity) {
     fetch('/Cart/AddToCart', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value // Для защиты от CSRF
+            'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify({ productId: productId, quantity: quantity })
     })
-        .then(response => {
-            if (response.ok) {
-                alert('Товар добавлен в корзину!');
-                // Обновляем корзину на клиенте или показываем модальное окно
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Товар успешно добавлен в корзину!');
+                // Обновить модальное окно корзины или выполнить другие действия
+                updateCartModal();
+                updateCartSummary();
             } else {
-                alert('Ошибка при добавлении товара в корзину');
+                alert('Ошибка при добавлении товара в корзину: ' + data.message);
             }
         })
         .catch(error => {
             console.error('Ошибка:', error);
-            alert('Ошибка при добавлении товара в корзину');
+            alert('Произошла ошибка при добавлении товара в корзину.');
         });
 }

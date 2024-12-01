@@ -2,48 +2,61 @@
 using MiniBidlo.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MiniBidlo.Controllers
 {
     public class CartController : Controller
     {
-        // Предположим, что у нас есть хранилище данных для корзины (например, в виде базы данных или кэш)
-        private readonly List<CartItem> _cartItems = new List<CartItem>();
+        private static List<CartItem> _cartItems = new List<CartItem>();
+        private readonly FlowerMagazinContext _db;
 
-        // Метод для отображения корзины с подсчетом общей стоимости
-        public IActionResult Index()
+        public CartController(FlowerMagazinContext context)
         {
-            decimal totalCost = CartItem.CalculateTotalCost(_cartItems);
-            ViewBag.TotalCost = totalCost;
-
-            return View(_cartItems);
+            _db = context;
         }
 
-        // Метод для обновления количества товара
         [HttpPost]
-        public IActionResult UpdateQuantity(int idCartItem, int newQuantity)
+        public IActionResult AddToCart([FromBody] CartItemModel model)
         {
-            var item = _cartItems.FirstOrDefault(x => x.IdCartItem == idCartItem);
-
-            if (item != null)
+            // Получаем продукт по ID
+            var product = _db.Products.FirstOrDefault(p => p.IdProduct == model.ProductId);
+            if (product == null)
             {
-                // Обновляем количество товара в корзине
-                item.UpdateQuantity(newQuantity);
+                return Json(new { success = false, message = "Продукт не найден." });
+            }
 
-                // Возвращаем успешный результат
-                return Json(new { success = true, message = "Количество товара обновлено." });
+            // Проверка, есть ли уже такой товар в корзине
+            var existingItem = _cartItems.FirstOrDefault(x => x.IdProduct == model.ProductId);
+            if (existingItem != null)
+            {
+                existingItem.Quantity += model.Quantity;
             }
             else
             {
-                return Json(new { success = false, message = "Товар не найден в корзине." });
+                var newItem = new CartItem
+                {
+                    IdProduct = model.ProductId,
+                    Quantity = model.Quantity,
+                    IdProductNavigation = product
+                };
+                _cartItems.Add(newItem);
             }
+
+            return Json(new { success = true, message = "Товар добавлен в корзину." });
         }
 
-        // Метод для подсчета общей стоимости товаров в корзине
-        public IActionResult GetTotalCost()
+        // Дополнительный метод для отображения корзины (необязательно)
+        public IActionResult Index()
         {
-            decimal totalCost = CartItem.CalculateTotalCost(_cartItems);
-            return Json(new { totalCost = totalCost });
+            ViewBag.TotalCost = _cartItems.Sum(item => item.Quantity * item.IdProductNavigation.Price);
+            return View(_cartItems);
         }
+    }
+
+    public class CartItemModel
+    {
+        public int ProductId { get; set; }
+        public int Quantity { get; set; }
     }
 }
