@@ -1,14 +1,46 @@
-﻿body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Arial', sans-serif;
-    background: #f8f8f8;
+﻿.filter-controls {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
+
+    .filter-controls label {
+        font-size: 16px;
+        margin-right: 10px;
+    }
+
+    .filter-controls select,
+    .filter-controls input {
+        padding: 8px;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        outline: none;
+        width: auto;
+        min-width: 150px;
+    }
+
+    .filter-controls input {
+        width: 250px;
+        margin-left: 10px;
+    }
+
+        .filter-controls select:focus,
+        .filter-controls input:focus {
+            border-color: #ff6f61;
+            box-shadow: 0 0 5px rgba(255, 111, 97, 0.5);
+        }
 
 .products {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
+    gap: 20px;
 }
 
 .product {
@@ -20,12 +52,19 @@
     width: 300px;
     text-align: center;
     position: relative;
+    transition: transform 0.3s;
 }
+
+    .product:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
     .product img {
         width: 100%;
         border-radius: 10px;
         height: 350px;
+        object-fit: cover;
     }
 
     .product h3 {
@@ -37,12 +76,14 @@
     .product p {
         font-size: 16px;
         color: #777;
+        margin-bottom: 10px;
     }
 
     .product .price {
         font-size: 20px;
         color: #ff6f61;
         margin: 10px 0;
+        font-weight: bold;
     }
 
     .product button {
@@ -54,10 +95,12 @@
         font-size: 16px;
         cursor: pointer;
         position: relative;
+        transition: background 0.3s;
     }
 
         .product button:hover {
             background: #e5d8ca;
+            color: #423d2b;
         }
 
 .icons {
@@ -76,3 +119,8 @@
     color: #704f38;
     font-size: 14px;
 }
+
+    .link:hover {
+        text-decoration: underline;
+        color: #ff6f61;
+    }

@@ -15,6 +15,8 @@ public partial class FlowerMagazinContext : DbContext
     {
     }
 
+    public virtual DbSet<CartItem> CartItems { get; set; }
+
     public virtual DbSet<Category> Categories { get; set; }
 
     public virtual DbSet<FlowerOrder> FlowerOrders { get; set; }
@@ -33,10 +35,34 @@ public partial class FlowerMagazinContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=LALALALA\\SQLEXPRESS01;Initial Catalog=FlowerMagazin;Integrated Security=True;Trust Server Certificate=True");
+        => optionsBuilder.UseSqlServer("Data Source=LALALALA\\SQLEXPRESS01;Initial Catalog=FlowerMagazin;Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<CartItem>(entity =>
+        {
+            entity.HasKey(e => e.IdCartItem).HasName("PK__CartItem__9E92CDAD127921B7");
+
+            entity.ToTable("CartItem");
+
+            entity.Property(e => e.IdCartItem).HasColumnName("id_cart_item");
+            entity.Property(e => e.AddedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("added_at");
+            entity.Property(e => e.IdProduct).HasColumnName("id_product");
+            entity.Property(e => e.IdUser).HasColumnName("id_user");
+            entity.Property(e => e.Quantity).HasColumnName("quantity");
+
+            entity.HasOne(d => d.IdProductNavigation).WithMany(p => p.CartItems)
+                .HasForeignKey(d => d.IdProduct)
+                .HasConstraintName("FK__CartItem__id_pro__2A164134");
+
+            entity.HasOne(d => d.IdUserNavigation).WithMany(p => p.CartItems)
+                .HasForeignKey(d => d.IdUser)
+                .HasConstraintName("FK__CartItem__id_use__29221CFB");
+        });
+
         modelBuilder.Entity<Category>(entity =>
         {
             entity.HasKey(e => e.IdCategory).HasName("PK__Category__E548B67311650905");

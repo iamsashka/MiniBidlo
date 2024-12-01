@@ -1,5 +1,56 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model List<MiniBidlo.Models.CartItem>
 @{
+    ViewBag.Title = "Корзина";
 }
+
+<h2>Корзина</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Название товара</th>
+            <th>Цена</th>
+            <th>Количество</th>
+            <th>Итого</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.IdProductNavigation?.Name</td>
+                <td>@item.IdProductNavigation?.Price</td>
+                <td>
+                    <input type="number" value="@item.Quantity" min="1" class="quantity-input" data-id="@item.IdCartItem" />
+                </td>
+                <td>@item.TotalPrice</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3>Общая стоимость: @ViewBag.TotalCost</h3>
+
+<script>
+    document.querySelectorAll('.quantity-input').forEach(input => {
+        input.addEventListener('change', function () {
+            let id = this.getAttribute('data-id');
+            let newQuantity = parseInt(this.value);
+
+            fetch('/Cart/UpdateQuantity', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ idCartItem: id, newQuantity: newQuantity })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    if (data.success) {
+                        location.reload(); // Перезагрузка страницы после успешного обновления
+                    }
+                });
+        });
+    });
+</script>

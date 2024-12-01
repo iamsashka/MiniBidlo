@@ -1,22 +1,154 @@
 ﻿@model IEnumerable<MiniBidlo.Models.Product>
+@using Microsoft.AspNetCore.Mvc.Rendering;
+@using System.Text.Json;
+@using Newtonsoft.Json;
+@using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
-<link href="~/css/catalog.css" rel="stylesheet" />
+<link href="~/css/Catalog.css" rel="stylesheet" />
+<script src="~/js/addcart.js"></script>
+
 <main>
-    <div class="products">
+    <div class="filter-controls">
+        <label for="category-filter">Фильтр по категории:</label>
+        <select id="category-filter">
+            <option value="">Все категории</option>
+            @foreach (var category in Model.Select(p => p.CategoryId).Distinct())
+            {
+                <option value="@category">@category</option>
+            }
+        </select>
+
+        <label for="search-input">Поиск:</label>
+        <input type="text" id="search-input" placeholder="Поиск по названию" />
+
+        <label for="sort-order">Сортировка:</label>
+        <select id="sort-order" onchange="sortProducts()">
+            <option value="">Сортировка</option>
+            <option value="price_asc">Цена: по возрастанию</option>
+            <option value="price_desc">Цена: по убыванию</option>
+            <option value="name_asc">Название: А-Я</option>
+            <option value="name_desc">Название: Я-А</option>
+        </select>
+    </div>
+
+    <div class="products" id="product-list">
         @foreach (var item in Model)
         {
-            <div class="product">
-                <img alt="Букет Роз" src="image/@item.ImageUrl" />
+            <div class="product" data-id="@item.IdProduct" data-name="@item.Name" data-price="@item.Price" data-category="@item.CategoryId">
+                <img alt="@item.Name" src="~/image/@item.ImageUrl" />
                 <h3>@item.Name</h3>
                 <p>@item.Description</p>
-                <div class="price">@item.Price</div>
-                <div class="price">@item.CategoryId</div>
-                <button><svg class="icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M1.5 1.5h2l1 9h9v2H3l-1-11H1.5V1.5z" /></svg> Купить</button>
-                <div class="icons">
-                    <svg class="icon-favorite" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 15S3 12 0 8C1.5 5 4 4 5 4c1 0 2 1 3 2s2-2 3-2c1 0 3.5 1 5 4-3 4-8 7-8 7z" /></svg>
-                    <a asp-action="ProductDetail" asp-controller="Catalog" asp-route-id="@item.IdProduct" class="link">Подробнее</a>
+                <div class="price">@item.Price ₽</div>
+                <button type="button" class="btn btn-primary" onclick="addToCart(@item.IdProduct, 1)">Купить</button>
+
+                <button onclick="toggleFavorite(@item.IdProduct)">
+                    <svg class="icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 15S3 12 0 8C1.5 5 4 4 5 4c1 0 2 1 3 2s2-2 3-2c1 0 3.5 1 5 4-3 4-8 7-8 7z" />
+                    </svg>
+                </button>
+                <a href="@Url.Action("ProductDetail", "Catalog", new { id = item.IdProduct })" class="link">Подробнее</a>
+            </div>
+        }
+    </div>
+
+    <!-- Модальное окно корзины -->
+    <div id="cart-modal" class="modal fade" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cartModalLabel">Содержимое корзины</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ul id="cart-items"></ul>
+                    <div id="cart-summary">
+                        <p id="cart-count"></p>
+                        <p id="total-price"></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-primary" onclick="checkout()">Оформить заказ</button>
                 </div>
             </div>
-            }
         </div>
+    </div>
 </main>
+
+<!-- Скрипт для корзины и сортировки -->
+<script>
+    let cart = []; // Массив для хранения данных о товарах в корзине
+
+   
+
+    function updateCartModal() {
+        const cartItems = document.getElementById('cart-items');
+        cartItems.innerHTML = '';
+        cart.forEach(item => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${item.name} - ${item.price} ₽ × ${item.quantity}`;
+            cartItems.appendChild(listItem);
+        });
+    }
+
+    function updateCartSummary() {
+        const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+        const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        document.getElementById('cart-count').textContent = `Товары в корзине: ${cartCount}`;
+        document.getElementById('total-price').textContent = `Итого: ${totalPrice.toFixed(2)} ₽`;
+    }
+
+    function checkout() {
+        alert('Переход к оформлению заказа.');
+        // Добавьте логику перехода на страницу оформления заказа или отправки данных на сервер.
+    }
+
+    function sortProducts() {
+        const sortOrder = document.getElementById('sort-order').value;
+        const productList = document.getElementById('product-list');
+        const products = Array.from(productList.getElementsByClassName('product'));
+
+        products.sort((a, b) => {
+            const priceA = parseFloat(a.getAttribute('data-price'));
+            const priceB = parseFloat(b.getAttribute('data-price'));
+            const nameA = a.getAttribute('data-name').toLowerCase();
+            const nameB = b.getAttribute('data-name').toLowerCase();
+
+            switch (sortOrder) {
+                case 'price_asc':
+                    return priceA - priceB;
+                case 'price_desc':
+                    return priceB - priceA;
+                case 'name_asc':
+                    return nameA.localeCompare(nameB);
+                case 'name_desc':
+                    return nameB.localeCompare(nameA);
+                default:
+                    return 0;
+            }
+        });
+
+        // Переставим элементы в DOM
+        products.forEach(product => productList.appendChild(product));
+    }
+
+    document.getElementById('category-filter').addEventListener('change', filterProducts);
+    document.getElementById('search-input').addEventListener('input', filterProducts);
+
+    function filterProducts() {
+        const category = document.getElementById('category-filter').value;
+        const searchTerm = document.getElementById('search-input').value.toLowerCase();
+
+        const products = document.querySelectorAll('.product');
+        products.forEach(product => {
+            const productName = product.getAttribute('data-name').toLowerCase();
+            const productCategory = product.getAttribute('data-category');
+
+            if ((category === '' || productCategory === category) && productName.includes(searchTerm)) {
+                product.style.display = 'block';
+            } else {
+                product.style.display = 'none';
+            }
+        });
+    }
+</script>
