@@ -48,9 +48,13 @@
                 .then(data => {
                     alert(data.message);
                     if (data.success) {
-                        location.reload(); // Перезагрузка страницы после успешного обновления
+                        // Обновляем общую стоимость на странице
+                        document.getElementById('total-price').textContent = `Итого: ${data.totalCost.toFixed(2)} ₽`;
+                        // Здесь можно обновить только необходимые элементы DOM, если требуется
+                        location.reload(); // Перезагрузка страницы (можно заменить на обновление только конкретных элементов)
                     }
                 });
         });
     });
+
 </script>
