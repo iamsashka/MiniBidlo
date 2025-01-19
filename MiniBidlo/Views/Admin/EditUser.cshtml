@@ -1,0 +1,32 @@
+﻿@model MiniBidlo.Models.User
+
+@{
+    var customerSelected = Model.Role == "customer" ? "selected" : "";
+    var adminSelected = Model.Role == "admin" ? "selected" : "";
+}
+
+<h1>Редактировать пользователя</h1>
+
+<form method="post">
+    <input type="hidden" name="IdUser" value="@Model.IdUser" />
+    
+    <div class="form-group">
+        <label for="Login">Логин</label>
+        <input type="text" class="form-control" id="Login" name="Login" value="@Model.Login" required />
+    </div>
+    
+    <div class="form-group">
+        <label for="Email">Email</label>
+        <input type="email" class="form-control" id="Email" name="Email" value="@Model.Email" required />
+    </div>
+    
+    <div class="form-group">
+        <label for="Role">Роль</label>
+        <select class="form-control" id="Role" name="Role">
+            <option value="customer">Покупатель</option>
+            <option value="admin">Администратор</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+</form>

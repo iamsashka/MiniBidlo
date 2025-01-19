@@ -1,0 +1,32 @@
+﻿@model MiniBidlo.Models.Product
+
+<h1>Добавить новый продукт</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label for="Name">Название</label>
+        <input type="text" class="form-control" id="Name" name="Name" required />
+    </div>
+    <div class="form-group">
+        <label for="Description">Описание</label>
+        <textarea class="form-control" id="Description" name="Description" required></textarea>
+    </div>
+    <div class="form-group">
+        <label for="Price">Цена</label>
+        <input type="number" class="form-control" id="Price" name="Price" required />
+    </div>
+    <div class="form-group">
+        <label for="CategoryId">Категория</label>
+        <input type="text" class="form-control" id="CategoryId" name="CategoryId" required />
+    </div>
+    <div class="form-group">
+        <label for="StockQuantity">Количество</label>
+        <input type="number" class="form-control" id="StockQuantity" name="StockQuantity" required />
+    </div>
+    <div class="form-group">
+        <label for="ImageUrl">Изображение (URL)</label>
+        <input type="text" class="form-control" id="ImageUrl" name="ImageUrl" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Создать</button>
+</form>

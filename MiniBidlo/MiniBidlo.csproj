@@ -7,8 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\js\addd.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <_ContentIncludedByDefault Remove="wwwroot\css\Autorization22.css" />
     <_ContentIncludedByDefault Remove="wwwroot\css\Home.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\js\addd.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\js\addd.js" />
   </ItemGroup>
 
   <ItemGroup>

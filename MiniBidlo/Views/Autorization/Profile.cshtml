@@ -21,7 +21,9 @@
         <p><strong>Телефон:</strong> @Model.Phone</p>
         <p><strong>Роль:</strong> @Model.Role</p>
 
-        <a href="@Url.Action("Index", "Autorization")">Выйти</a>
+        <form asp-action="Logout" method="post">
+            <button type="submit" class="btn btn-danger">Выйти</button>
+        </form>
     </div>
 
 </body>

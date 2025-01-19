@@ -12,6 +12,7 @@
             <th>Цена</th>
             <th>Количество</th>
             <th>Итого</th>
+            <th>Действия</th>
         </tr>
     </thead>
     <tbody>
@@ -21,22 +22,49 @@
                 <td>@item.IdProductNavigation?.Name</td>
                 <td>@item.IdProductNavigation?.Price</td>
                 <td>
-                    <input type="number" value="@item.Quantity" min="1" class="quantity-input" data-id="@item.IdCartItem" />
+                    <input type="number" value="@item.Quantity" min="1" class="quantity-input" data-id="@item.IdCartItem" data-available-quantity="@item.IdProductNavigation.StockQuantity" />
                 </td>
                 <td>@item.TotalPrice</td>
+                <td>
+                    <!-- Кнопка обновления количества товара -->
+                    <button class="btn btn-primary update-cart" data-id="@item.IdCartItem">Обновить</button>
+
+                    <!-- Кнопка удаления товара из корзины -->
+                    <button class="btn btn-danger remove-item" data-id="@item.IdCartItem">Удалить</button>
+                </td>
             </tr>
         }
     </tbody>
 </table>
 
-<h3>Общая стоимость: @ViewBag.TotalCost</h3>
+<h3>Общая стоимость: <span id="total-price">@ViewBag.TotalCost</span></h3>
+
+<!-- Кнопка для обновления корзины -->
+<button id="update-cart" class="btn btn-success">Обновить корзину</button>
 
 <script>
-    document.querySelectorAll('.quantity-input').forEach(input => {
-        input.addEventListener('change', function () {
+    document.querySelectorAll('.update-cart').forEach(button => {
+        button.addEventListener('click', function () {
             let id = this.getAttribute('data-id');
-            let newQuantity = parseInt(this.value);
+            let quantityInput = this.closest('tr').querySelector('.quantity-input');
+            let newQuantity = parseInt(quantityInput.value);
 
+            // Проверка на отрицательное или нулевое количество
+            if (newQuantity <= 0) {
+                alert('Количество не может быть меньше 1.');
+                return; // Прерываем выполнение, если количество некорректное
+            }
+
+            // Получаем остаток товара на складе
+            let availableQuantity = parseInt(quantityInput.getAttribute('data-available-quantity'));
+
+            // Проверка на превышение доступного количества на складе
+            if (newQuantity > availableQuantity) {
+                alert(`На складе доступно только ${availableQuantity} единиц товара.`);
+                return; // Прерываем выполнение, если количество превышает остаток
+            }
+
+            // Отправляем запрос на сервер
             fetch('/Cart/UpdateQuantity', {
                 method: 'POST',
                 headers: {
@@ -46,15 +74,43 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    alert(data.message);
                     if (data.success) {
-                        // Обновляем общую стоимость на странице
-                        document.getElementById('total-price').textContent = `Итого: ${data.totalCost.toFixed(2)} ₽`;
-                        // Здесь можно обновить только необходимые элементы DOM, если требуется
-                        location.reload(); // Перезагрузка страницы (можно заменить на обновление только конкретных элементов)
+                        alert('Товар обновлен!');
+                        location.reload(); // Перезагружаем страницу, чтобы обновить корзину
+                    } else {
+                        alert(data.message); // Показываем сообщение об ошибке
                     }
+                })
+                .catch(error => {
+                    alert('Произошла ошибка при обновлении товара.');
                 });
         });
     });
 
+
+    // Кнопка удаления товара из корзины
+    document.querySelectorAll('.remove-item').forEach(button => {
+        button.addEventListener('click', function () {
+            let id = this.getAttribute('data-id');
+
+            if (confirm('Вы уверены, что хотите удалить этот товар из корзины?')) {
+                fetch('/Cart/RemoveItem', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ idCartItem: id })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Товар удален!');
+                            location.reload(); // Перезагружаем страницу, чтобы обновить корзину
+                        } else {
+                            alert('Ошибка удаления товара');
+                        }
+                    });
+            }
+        });
+    });
 </script>

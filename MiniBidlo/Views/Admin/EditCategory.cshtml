@@ -1,0 +1,16 @@
+﻿@model MiniBidlo.Models.Category
+
+<h1>Редактировать категорию</h1>
+
+<form method="post">
+    <input type="hidden" name="IdCategory" value="@Model.IdCategory" />
+    <div class="form-group">
+        <label for="CategoryName">Название категории</label>
+        <input type="text" class="form-control" id="CategoryName" name="CategoryName" value="@Model.CategoryName" required />
+    </div>
+    <div class="form-group">
+        <label for="Description">Описание</label>
+        <textarea class="form-control" id="Description" name="Description">@Model.Description</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+</form>

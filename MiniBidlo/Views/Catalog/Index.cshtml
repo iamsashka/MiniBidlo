@@ -1,8 +1,6 @@
 ﻿@model IEnumerable<MiniBidlo.Models.Product>
 @using Microsoft.AspNetCore.Mvc.Rendering;
-@using System.Text.Json;
 @using Newtonsoft.Json;
-@using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 <link href="~/css/Catalog.css" rel="stylesheet" />
 <script src="~/js/addcart.js"></script>
@@ -12,9 +10,9 @@
         <label for="category-filter">Фильтр по категории:</label>
         <select id="category-filter">
             <option value="">Все категории</option>
-            @foreach (var category in Model.Select(p => p.CategoryId).Distinct())
+            @foreach (var category in ViewBag.Categories as SelectList)
             {
-                <option value="@category">@category</option>
+                <option value="@category.Value">@category.Text</option> <!-- Отображаем имя категории -->
             }
         </select>
 
@@ -34,7 +32,7 @@
     <div class="products" id="product-list">
         @foreach (var item in Model)
         {
-            <div class="product" data-id="@item.IdProduct" data-name="@item.Name" data-price="@item.Price" data-category="@item.CategoryId">
+            <div class="product" data-id="@item.IdProduct" data-name="@item.Name" data-price="@item.Price" data-category="@item.CategoryId" data-stock-quantity="@item.StockQuantity">
                 <img alt="@item.Name" src="~/image/@item.ImageUrl" />
                 <h3>@item.Name</h3>
                 <p>@item.Description</p>
@@ -49,6 +47,7 @@
                 <a href="@Url.Action("ProductDetail", "Catalog", new { id = item.IdProduct })" class="link">Подробнее</a>
             </div>
         }
+
     </div>
 
     <!-- Модальное окно корзины -->
@@ -78,8 +77,6 @@
 <!-- Скрипт для корзины и сортировки -->
 <script>
     let cart = []; // Массив для хранения данных о товарах в корзине
-
-   
 
     function updateCartModal() {
         const cartItems = document.getElementById('cart-items');
