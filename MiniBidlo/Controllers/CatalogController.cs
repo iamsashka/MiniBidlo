@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MiniBidlo.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 public class CatalogController : Controller
 {
@@ -31,7 +32,7 @@ public class CatalogController : Controller
         return View(products);
     }
 
-    // Просмотр детальной информации о продукте
+  
     public async Task<IActionResult> ProductDetail(int? id)
     {
         if (id == null)
@@ -40,8 +41,10 @@ public class CatalogController : Controller
         }
 
         var product = await _context.Products
-            .Include(p => p.Category)
-            .FirstOrDefaultAsync(p => p.IdProduct == id);
+        .Include(p => p.Category)
+        .Include(p => p.Reviews) // Загружаем отзывы
+            .ThenInclude(r => r.IdUserNavigation) // Загружаем пользователя для каждого отзыва
+        .FirstOrDefaultAsync(p => p.IdProduct == id);
 
         if (product == null)
         {
@@ -49,6 +52,35 @@ public class CatalogController : Controller
         }
 
         return View(product);
+    }
+    [HttpPost]
+    
+    public IActionResult AddReview(Review review)
+    {
+        if (ModelState.IsValid)
+        {
+            // Получаем ID авторизованного пользователя
+            var userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Index", "Autorization"); // Перенаправляем на страницу авторизации, если пользователь не авторизован
+            }
+
+            // Заполняем недостающие данные
+            review.IdUser = userId.Value;
+            review.CreatedAt = DateTime.Now;
+
+            // Добавляем отзыв в базу данных
+            _context.Reviews.Add(review);
+            _context.SaveChanges();
+
+            // Перенаправляем на страницу товара
+            return RedirectToAction("ProductDetail", new { id = review.IdProduct });
+        }
+
+        // Если данные невалидны, возвращаем обратно на страницу товара
+        return RedirectToAction("ProductDetail", new { id = review.IdProduct });
     }
 
     // Метод добавления товара в корзину

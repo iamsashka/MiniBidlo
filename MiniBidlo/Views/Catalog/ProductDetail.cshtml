@@ -4,6 +4,7 @@
 
 <script src="~/js/addd.js"></script>
 <link href="~/css/ProductDetail.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/css/reviews.css" asp-append-version="true" />
 <script src="~/js/addcart.js"></script>
 
 <body>
@@ -35,4 +36,33 @@
             </div>
         </div>
     </div>
+    <div class="reviews-container">
+        <h3>Отзывы</h3>
+        @if (Model.Reviews.Any())
+        {
+            foreach (var review in Model.Reviews)
+            {
+                <div class="review">
+                    <div class="review-header">
+                        <span class="username">@review.IdUserNavigation?.Name</span>
+                        <span class="rating">
+                            @for (int i = 0; i < review.Rating; i++)
+                            {
+                                <span class="star">★</span>
+                            }
+                        </span>
+                        <span class="date">@review.CreatedAt.ToString("dd.MM.yyyy")</span>
+                    </div>
+                    <div class="comment">@review.Comment</div>
+                </div>
+            }
+        }
+        else
+        {
+            <p>Пока нет отзывов. Будьте первым!</p>
+        }
+
+    </div>
+
+    @await Html.PartialAsync("~/Views/Shared/Partial/_AddReview.cshtml", new MiniBidlo.Models.Review { IdProduct = Model.IdProduct })
 </body>

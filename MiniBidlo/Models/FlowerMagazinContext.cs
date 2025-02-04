@@ -29,6 +29,8 @@ public partial class FlowerMagazinContext : DbContext
 
     public virtual DbSet<Product> Products { get; set; }
 
+    public virtual DbSet<Review> Reviews { get; set; }
+
     public virtual DbSet<Supplier> Suppliers { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
@@ -218,6 +220,33 @@ public partial class FlowerMagazinContext : DbContext
                         j.IndexerProperty<int>("IdProduct").HasColumnName("id_product");
                         j.IndexerProperty<int>("IdSupplier").HasColumnName("id_supplier");
                     });
+        });
+
+        modelBuilder.Entity<Review>(entity =>
+        {
+            entity.HasKey(e => e.IdReview).HasName("PK__Review__2F79F8C7CC513865");
+
+            entity.ToTable("Review");
+
+            entity.Property(e => e.IdReview).HasColumnName("id_review");
+            entity.Property(e => e.Comment)
+                .HasColumnType("text")
+                .HasColumnName("comment");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.IdProduct).HasColumnName("id_product");
+            entity.Property(e => e.IdUser).HasColumnName("id_user");
+            entity.Property(e => e.Rating).HasColumnName("rating");
+
+            entity.HasOne(d => d.IdProductNavigation).WithMany(p => p.Reviews)
+                .HasForeignKey(d => d.IdProduct)
+                .HasConstraintName("FK__Review__id_produ__3D2915A8");
+
+            entity.HasOne(d => d.IdUserNavigation).WithMany(p => p.Reviews)
+                .HasForeignKey(d => d.IdUser)
+                .HasConstraintName("FK__Review__id_user__3C34F16F");
         });
 
         modelBuilder.Entity<Supplier>(entity =>

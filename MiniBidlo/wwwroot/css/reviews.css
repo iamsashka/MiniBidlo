@@ -1,0 +1,132 @@
+﻿.reviews-container {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 100%;
+    max-height: fit-content;
+}
+
+.review {
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #fafafa;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .review:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.username {
+    font-size: 16px;
+    font-weight: bold;
+    color: #e53935;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+}
+
+    .rating .star {
+        color: #ffd700;
+        font-size: 18px;
+        margin-right: 2px;
+        transition: transform 0.2s ease, color 0.2s ease;
+    }
+
+        .rating .star:hover {
+            transform: scale(1.2);
+            color: #ffc107;
+        }
+
+.date {
+    font-size: 14px;
+    color: #757575;
+}
+
+.comment {
+    font-size: 14px;
+    color: #333;
+    line-height: 1.5;
+    margin-top: 10px;
+}
+
+.add-review-btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: #fff;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+    .add-review-btn:hover {
+        background-color: #45a049;
+    }
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .review-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .rating {
+        margin-top: 5px;
+    }
+
+    .username {
+        font-size: 14px;
+    }
+
+    .comment {
+        font-size: 12px;
+    }
+
+    .reviews-container {
+        padding: 15px;
+    }
+
+    .review {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .reviews-container {
+        padding: 10px;
+    }
+
+    .review {
+        padding: 10px;
+    }
+
+    .username {
+        font-size: 12px;
+    }
+
+    .comment {
+        font-size: 11px;
+    }
+
+    .add-review-btn {
+        width: 100%;
+        text-align: center;
+        padding: 12px;
+    }
+}

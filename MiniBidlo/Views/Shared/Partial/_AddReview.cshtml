@@ -1,0 +1,21 @@
+﻿@model MiniBidlo.Models.Review
+<link rel="stylesheet" href="~/css/review-form.css" asp-append-version="true" />
+
+<form class="feedback-form" asp-action="AddReview" asp-controller="Catalog" method="post">
+    <input type="hidden" asp-for="IdProduct" value="@Model.IdProduct" />
+    <div class="feedback-group">
+        <label>Оценка:</label>
+        <select asp-for="Rating" class="feedback-control">
+            <option value="1">1 звезда</option>
+            <option value="2">2 звезды</option>
+            <option value="3">3 звезды</option>
+            <option value="4">4 звезды</option>
+            <option value="5">5 звезд</option>
+        </select>
+    </div>
+    <div class="feedback-group">
+        <label>Комментарий:</label>
+        <textarea asp-for="Comment" class="feedback-control"></textarea>
+    </div>
+    <button type="submit" class="feedback-btn">Отправить отзыв</button>
+</form>
